@@ -12,6 +12,9 @@ custom shell
 
 int pwd_func(char **args);
 int date_func(char **args);
+int ifc_func(char **args);
+
+
 
 int pwd_func(char **args)
 {
@@ -41,4 +44,74 @@ int date_func(char **args)
 
         return 1;
 }
+
+int ifc_func(char **args)
+{
+        FILE *fp;
+        char ifc_data[1024];
+        char command[100];
+
+        // If no argument is passed
+        if(args[1] == NULL)
+        {
+                system("ifconfig eth0");
+        }
+
+        // If the user passes in an interface, call the ifconfig command for that interface
+        else if(args[2] == NULL)
+        {
+                // Combine the interface name with the ifconfig command and store the result in the variable
+                sprintf(command, "/sbin/ifconfig %s", args[1]);
+
+                // Run the command
+                fp = popen(command, "r");
+
+                // Print the results
+                while (fgets(ifc_data, sizeof(ifc_data), fp) != NULL)
+                {
+                        printf("%s", ifc_data);
+                }
+
+                pclose(fp);
+        }
+
+        // If the user passes an interface AND an IP address, validate the IP address and assign
+        // it to the interface
+        else if(args[3] == NULL)
+        {
+                int result;
+
+                //
+                result = ip_validator(args[2]);
+                if(result == 1)
+                {
+                        // Combine the IP address and interface name with the ifconfig command and store the result in the variable
+                        sprintf(command, "sudo /sbin/ifconfig %s %s", args[1], args[2]);
+
+                        // Run the command
+                        fp = popen(command, "r");
+
+                        // Print the results
+                        while (fgets(ifc_data, sizeof(ifc_data), fp) != NULL)
+                        {
+                                printf("%s", ifc_data);
+                        }
+                }
+
+                else
+                {
+                        fprintf(stderr, "tsh: invalid argument to \"ifc\"\n");
+
+                }
+
+                pclose(fp);
+        }
+
+        else
+        {
+                fprintf(stderr, "tsh: invalid argument to \"ifc\"\n");
+        }
+        return 1;
+}
+
 
