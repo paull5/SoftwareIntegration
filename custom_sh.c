@@ -1,7 +1,6 @@
 /*
 Paul lalwor
 Systems Integration assignment 1
-Custom shell using tiny shell
 */
 
 #include <stdlib.h>
