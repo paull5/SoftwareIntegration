@@ -1,7 +1,7 @@
 /*
-	Paul lawlor c13764501
-	SoftwareIntegration Assignment 1
-	Custom shell
+    Paul lawlor c13764501
+    SoftwareIntegration Assignment 1
+    Custom shell
 */
 
 #include <sys/wait.h>
@@ -14,29 +14,31 @@
 #include <sys/stat.h>
 
 /*
-	Declare functions for internal commands
+        Declare functions for internal commands
 */
 
 int pwd_func(char **args);
-int date_func(char **args); 
+int date_func(char **args);
 int cd_func(char **args);
 int help_func(char **args);
 int logout_func(char **args);
 int ifc_func(char **args);
 int ud_func(char **args);
+int ls_func(char **args);
 
 /*
-	Global variables used for memory allocation in  read_line and split_line 
+     Global variables used for memory allocation in  read_line and split_line
 */
+
 
 #define cust_TOK_BUFSIZE 64
 #define cust_TOK_DELIM " \t\r\n\a"
 #define cust_RL_BUFSIZE 1024
 
-/*
-	Struct to hold  a list of commands.
+/* 
+     Struct to hold  a list of commands.
 */
- 
+
 char *builtin_str[] = {
         "cd",
         "help",
@@ -45,11 +47,12 @@ char *builtin_str[] = {
         "ifc",
         "dt",
         "ud",
+        "ls",
 };
 
 
 /*
-	Functions for internal commands
+    Functions for internal commands
 */
 
 int (*builtin_func[]) (char **) = {
@@ -60,6 +63,7 @@ int (*builtin_func[]) (char **) = {
         &ifc_func,
         &date_func,
         &ud_func,
+        &ls_func,
 };
 
 
@@ -69,7 +73,7 @@ int num_builtins()
 }
 
 
-/**
+/*
     pwd_func displays users current working directory
 */
 
@@ -89,7 +93,7 @@ int pwd_func(char **args)
 }
 
 /*
-    date_func displays the current date formatted 
+    date_func displays the current date formatted
 */
 
 int date_func(char **args)
@@ -106,8 +110,8 @@ int date_func(char **args)
 }
 
 /*
-    ifc_func displays ifconfig information 
-	When ifc is entered only eth0 information is displayed 
+    ifc_func displays ifconfig information
+    When ifc is entered only eth0 information is displayed
 */
 
 int ifc_func(char **args)
@@ -121,7 +125,7 @@ int ifc_func(char **args)
         {
                 system("ifconfig eth0");
         }
-		
+
         else
         {
                 fprintf(stderr, "customsh: invalid argument to \"ifc\"\n");
@@ -131,13 +135,12 @@ int ifc_func(char **args)
 
 
 /*
-	Print help function displays a lisy of allowed commands.  
+    Print help function displays a lisy of allowed commands.
 */
 
 int help_func(char **args)
 {
         int i;
-        printf("Type help at the prompt to see a list of commands\n");
         printf("Type program names followed by any arguments, and press enter.\n");
         printf("These are the built in commands:\n");
 
@@ -149,17 +152,17 @@ int help_func(char **args)
         return 1;
 }
 
-/**
-    logout_func logs user out of shell 
- */
- 
+/*
+    logout_func logs user out of shell
+*/
+
 int logout_func(char **args)
 {
         return 0;
 }
 
 /*
-	cd_func changes directory when entered with appropriate arguments     
+    cd_func changes directory when entered with appropriate arguments
 */
 
 int cd_func(char **args)
@@ -209,11 +212,38 @@ int ud_func(char **args)
 
         printf("%d, %d, %s, %s, %ld\n", uid, gid, p, g->gr_name,(long) s.st_ino);
 }
+/*
+    ls_func displaya a list of the contents of the etc and bin directories
+*/
+
+int ls_func(char **args)
+{
+
+        FILE *fp;
+        char path[1035];
+
+        //Open the command for reading.
+        fp = popen("/bin/ls /etc/", "r");
+        if (fp == NULL) {
+            printf("Failed to run command\n" );
+        exit(1);
+        }
+
+        //Read the output a line at a time - output it.
+        while (fgets(path, sizeof(path)-1, fp) != NULL) {
+            printf("%s", path);
+        }
+
+        //close
+        pclose(fp);
+
+        return 1;
+}
 
 /*
     launch_func launchs the program and wait for it to terminate.
-	take in a list of argumentsand forks the process 
-	child process will run the user command
+    take in a list of argumentsand forks the process
+    child process will run the user command
 */
 int launch_func(char **args)
 {
@@ -224,8 +254,8 @@ int launch_func(char **args)
         // This is the child process
         if (pid == 0)
         {
-				//execvp takes a program name and a vector of string arguments
-				//and takes a program name instead of full file path
+                //execvp takes a program name and a vector of string arguments
+                //and takes a program name instead of full file path
                 if (execvp(args[0], args) == -1)
                 {
                         perror("customsh");
@@ -253,7 +283,7 @@ int launch_func(char **args)
 }
 
 /*
-    execute_func executes the shell built-in or launch program.       
+    execute_func executes the shell built-in or launch program.
 */
 
 int execute_func(char **args)
@@ -280,11 +310,11 @@ int execute_func(char **args)
 }
 
 /*
-	read_line_func reads a line of input from user.
-	Then return the line.
-	Start with a block of memory and allocate more if needed.
- */
- 
+    read_line_func reads a line of input from user.
+    Then return the line.
+    Start with a block of memory and allocate more if needed.
+*/
+
 char *read_line_func(void)
 {
         int bufsize = cust_RL_BUFSIZE;
@@ -292,7 +322,7 @@ char *read_line_func(void)
         char *buffer = malloc(sizeof(char) * bufsize);
         int c;
 
-		//check to see if allocation is exceeded and reallocate more space 
+        //check to see if allocation is exceeded and reallocate more space
         if (!buffer)
         {
                 fprintf(stderr, "customsh: allocation error\n");
@@ -330,9 +360,9 @@ char *read_line_func(void)
 
 /*
     split_line splits a line into individual elements
-	using the same method as before for reallocating memory
-	does not allow quoting or backslash escaping in the command line arguments
-	uses white space to seperate arguments from each other
+    using the same method as before for reallocating memory
+    does not allow quoting or backslash escaping in the command line arguments
+    uses white space to seperate arguments from each other
 */
 
 char **split_line_func(char *line)
@@ -371,7 +401,7 @@ char **split_line_func(char *line)
 }
 
 /*
-        main_loop getting input and executing it
+    main_loop getting input and executing it
 */
 void main_loop(void)
 {
@@ -381,7 +411,7 @@ void main_loop(void)
         char **args;
         int status;
         char whoami[100];
-        const char *const red = "\e[38;5;196m";
+        const char *const blue = "\033[1;34m";
         const char *const normal = "\033[0m";
 
         // Running the username command
@@ -395,7 +425,7 @@ void main_loop(void)
         pclose(fp);
         do
         {
-                printf("%s%s@customsh >%s ",red ,whoami, normal);
+                printf("%s%s@customsh $%s ",blue ,whoami, normal);
                 line = read_line_func();
                 args = split_line_func(line);
                 status = execute_func(args);
@@ -410,14 +440,12 @@ void main_loop(void)
     Main entry point
 */
 
-
 int main(int argc, char **argv)
 {
-		//Run main loop
+        //Run main loop
         main_loop();
 
         //Perform shutdown/cleanup
         return EXIT_SUCCESS;
 }
-
 
