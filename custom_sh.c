@@ -234,7 +234,9 @@ int ud_func(char **args)
 
         printf("%d, %d, %s, %s, %ld\n", uid, gid, p, g->gr_name,(long) s.st_ino);
 }
-
+/*
+    ps _func displays running processes
+*/
 
 int ps_func(char **args)
 {
