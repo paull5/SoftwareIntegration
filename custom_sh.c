@@ -115,25 +115,37 @@ int date_func(char **args)
 /*
     ifc_func displays ifconfig information
     When ifc is entered only eth0 information is displayed
+    If ifc followed by an interface is entered that interface will bre displayed
 */
 
-int ifc_func(char **args)
-{
-        FILE *fp;
-        char ifc_data[1024];
-        char command[100];
+int ifc_func(char **args) {
 
-        // If no argument is passed
-        if(args[1] == NULL)
-        {
-                system("ifconfig eth0");
-        }
+	char command[100];
 
-        else
-        {
-                fprintf(stderr, "customsh: invalid argument to \"ifc\"\n");
-        }
-        return 1;
+	//if no argument is passed
+	//print eth0 as default
+	if (args[1] == NULL) {
+		printf("\n");
+		system("ifconfig eth0");
+
+	//else if an argument is passed
+	//print desired ifconfig interface
+	} else {
+	    if (args[1] != NULL) {
+	       	printf("\n");
+			sprintf(command, "ifconfig %s",args[1]);
+			system(command);
+
+	    }
+	//else print input error
+	else
+	{
+		fprintf(stderr, "customsh: invalid argument to \"ifc\"\n");
+	}
+
+    }
+
+    return 1;
 }
 
 /*
@@ -150,25 +162,6 @@ int help_func(char **args)
         for (i = 0; i < num_builtins(); i++)
         {
                 printf("  %s\n", builtin_str[i]);
-        }
-        return 1;
-}
-
-/*
-    Displays free disk space 
-*/
-
-int df_func(char **args)
-{
-        // If no argument is passed
-        if(args[1] == NULL)
-        {
-                system("df");
-        }
-
-        else
-        {
-                system("df");
         }
         return 1;
 }
@@ -259,6 +252,25 @@ int ls_func(char **args)
         //close
         pclose(fp);
 
+        return 1;
+}
+
+/*
+    Displays free disk space
+*/
+
+int df_func(char **args)
+{
+        // If no argument is passed
+        if(args[1] == NULL)
+        {
+                system("df");
+        }
+
+        else
+        {
+                system("df");
+        }
         return 1;
 }
 
