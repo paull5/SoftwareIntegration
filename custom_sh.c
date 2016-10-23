@@ -25,6 +25,8 @@ int logout_func(char **args);
 int ifc_func(char **args);
 int ud_func(char **args);
 int ls_func(char **args);
+int df_func(char **args);
+int ps_func(char **args);
 
 /*
      Global variables used for memory allocation in  read_line and split_line
@@ -48,8 +50,9 @@ char *builtin_str[] = {
         "dt",
         "ud",
         "ls",
+	"df",
+	"ps",
 };
-
 
 /*
     Functions for internal commands
@@ -64,6 +67,8 @@ int (*builtin_func[]) (char **) = {
         &date_func,
         &ud_func,
         &ls_func,
+	&df_func,
+	&ps_func,
 };
 
 
@@ -71,7 +76,6 @@ int num_builtins()
 {
         return sizeof(builtin_str) / sizeof(char *);
 }
-
 
 /*
     pwd_func displays users current working directory
@@ -133,7 +137,6 @@ int ifc_func(char **args)
         return 1;
 }
 
-
 /*
     Print help function displays a lisy of allowed commands.
 */
@@ -148,6 +151,25 @@ int help_func(char **args)
         for (i = 0; i < num_builtins(); i++)
         {
                 printf("  %s\n", builtin_str[i]);
+        }
+        return 1;
+}
+
+/*
+    Displays free disk space 
+*/
+
+int df_func(char **args)
+{
+        // If no argument is passed
+        if(args[1] == NULL)
+        {
+                system("df");
+        }
+
+        else
+        {
+                system("df");
         }
         return 1;
 }
@@ -212,8 +234,35 @@ int ud_func(char **args)
 
         printf("%d, %d, %s, %s, %ld\n", uid, gid, p, g->gr_name,(long) s.st_ino);
 }
+
+
+int ps_func(char **args)
+{
+    FILE *pf;
+    char command[20];
+    char data[512];
+
+    // Execute a process listing
+    sprintf(command, "ps aux wwwf"); 
+
+    // Setup our pipe for reading and execute our command.
+    pf = popen(command,"r"); 
+
+    // Error handling
+
+    // Get the data from the process execution
+    fgets(data, 512 , pf);
+
+    // the data is now in 'data'
+
+    if (pclose(pf) != 0)
+        fprintf(stderr," Error: Failed to close command stream \n");
+
+    return;
+}
+
 /*
-    ls_func displaya a list of the contents of the etc and bin directories
+    ls_func displaya a list of the content of the etc and bin directories
 */
 
 int ls_func(char **args)
@@ -245,6 +294,7 @@ int ls_func(char **args)
     take in a list of argumentsand forks the process
     child process will run the user command
 */
+
 int launch_func(char **args)
 {
         pid_t pid, wpid;
@@ -403,6 +453,7 @@ char **split_line_func(char *line)
 /*
     main_loop getting input and executing it
 */
+
 void main_loop(void)
 {
 
@@ -448,4 +499,3 @@ int main(int argc, char **argv)
         //Perform shutdown/cleanup
         return EXIT_SUCCESS;
 }
-
