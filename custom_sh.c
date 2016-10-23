@@ -154,15 +154,30 @@ int ifc_func(char **args) {
 
 int help_func(char **args)
 {
-        int i;
-        printf("Type program names followed by any arguments, and press enter.\n");
-        printf("These are the built in commands:\n");
+	const char *const yellow = "\e[33m";
 
-        // Looping through and printing the list of pre-defined commands
-        for (i = 0; i < num_builtins(); i++)
-        {
-                printf("  %s\n", builtin_str[i]);
-        }
+
+	if (args[1] == NULL) 
+	{
+
+		printf("%s", yellow);
+        	printf("Type program names followed by any arguments, and press enter.\n");
+        	printf("These are the built in commands:\n");
+		printf("\n");
+		printf("******************************************************************\n");
+		printf("cd: Changes the current directory.\n"); 
+		printf("pw: Displaysthe current working directory.\n");
+		printf("ifc: Displays the ifconfig of the eth0 by default, you can specify your own interface.\n");
+		printf("dt: Displays the current date.\n");
+		printf("ud: Displays the userid, groupid, username and groupname.\n");
+		printf("ls: Dispalys the content of the etc and bin directories.\n");
+		printf("df: Displays the the free disk space.\n");
+		printf("shell: Displays the shell where the user is currently and it's PID.\n");
+		printf("logout: Exits the current shell and the system.\n");
+		printf("******************************************************************\n");
+
+
+	}
         return 1;
 }
 
