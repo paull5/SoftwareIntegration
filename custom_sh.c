@@ -26,7 +26,6 @@ int ifc_func(char **args);
 int ud_func(char **args);
 int ls_func(char **args);
 int df_func(char **args);
-int ps_func(char **args);
 
 /*
      Global variables used for memory allocation in  read_line and split_line
@@ -51,7 +50,6 @@ char *builtin_str[] = {
         "ud",
         "ls",
 	"df",
-	"ps",
 };
 
 /*
@@ -68,9 +66,7 @@ int (*builtin_func[]) (char **) = {
         &ud_func,
         &ls_func,
 	&df_func,
-	&ps_func,
 };
-
 
 int num_builtins()
 {
@@ -233,34 +229,6 @@ int ud_func(char **args)
         stat(home_dir, &s);
 
         printf("%d, %d, %s, %s, %ld\n", uid, gid, p, g->gr_name,(long) s.st_ino);
-}
-/*
-    ps _func displays running processes
-*/
-
-int ps_func(char **args)
-{
-    FILE *pf;
-    char command[20];
-    char data[512];
-
-    // Execute a process listing
-    sprintf(command, "ps aux wwwf"); 
-
-    // Setup our pipe for reading and execute our command.
-    pf = popen(command,"r"); 
-
-    // Error handling
-
-    // Get the data from the process execution
-    fgets(data, 512 , pf);
-
-    // the data is now in 'data'
-
-    if (pclose(pf) != 0)
-        fprintf(stderr," Error: Failed to close command stream \n");
-
-    return;
 }
 
 /*
