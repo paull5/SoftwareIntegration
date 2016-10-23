@@ -118,25 +118,29 @@ int date_func(char **args)
     If ifc followed by an interface is entered that interface will bre displayed
 */
 
-int ifc_func(char **args) {
+int ifc_func(char **args) 
+{
 
 	char command[100];
 
 	//if no argument is passed
 	//print eth0 as default
-	if (args[1] == NULL) {
+	if (args[1] == NULL) 
+	{
 		printf("\n");
 		system("ifconfig eth0");
 
 	//else if an argument is passed
 	//print desired ifconfig interface
-	} else {
+	}
+	else 
+	{
 	    if (args[1] != NULL) {
 	       	printf("\n");
 			sprintf(command, "ifconfig %s",args[1]);
 			system(command);
 
-	    }
+	}
 	//else print input error
 	else
 	{
