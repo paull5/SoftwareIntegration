@@ -486,6 +486,7 @@ void main_loop(void)
         char **args;
         int status;
         char whoami[100];
+	const char *const red = "\e[38;5;82m";
         const char *const blue = "\033[1;34m";
         const char *const normal = "\033[0m";
 
@@ -498,6 +499,8 @@ void main_loop(void)
         }
 
         pclose(fp);
+	printf("%sPlease type help to see a list of available commands:\n",red);
+
         do
         {
                 printf("%s%s@customsh $%s ",blue ,whoami, normal);
@@ -507,7 +510,8 @@ void main_loop(void)
 
                 free(line);
                 free(args);
-        }
+
+ 	}
         while (status);
 }
 
