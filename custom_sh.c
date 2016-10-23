@@ -38,7 +38,7 @@ int sh_func(char **args);
 #define cust_RL_BUFSIZE 1024
 
 /* 
-     Struct to hold  a list of commands.
+     Array to hold  a list of commands.
 */
 
 char *builtin_str[] = {
