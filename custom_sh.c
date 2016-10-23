@@ -26,6 +26,7 @@ int ifc_func(char **args);
 int ud_func(char **args);
 int ls_func(char **args);
 int df_func(char **args);
+int sh_func(char **args);
 
 /*
      Global variables used for memory allocation in  read_line and split_line
@@ -50,6 +51,7 @@ char *builtin_str[] = {
         "ud",
         "ls",
 	"df",
+	"shell",
 };
 
 /*
@@ -66,6 +68,7 @@ int (*builtin_func[]) (char **) = {
         &ud_func,
         &ls_func,
 	&df_func,
+	&sh_func,
 };
 
 int num_builtins()
@@ -258,6 +261,30 @@ int ls_func(char **args)
 
         return 1;
 }
+
+/*
+    sh_func displays shell and it's process id (PID)
+*/
+
+int sh_func(char **args)
+{
+        // If no argument is passed
+        if(args[1] == NULL)
+        {
+                system("echo $SHELL\n");
+		system("ps -p $$");
+
+        }
+
+        else
+        {
+                system("echo $SHELL\n");
+		system("ps -p $$");
+
+        }
+        return 1;
+}
+
 
 /*
     launch_func launchs the program and wait for it to terminate.
