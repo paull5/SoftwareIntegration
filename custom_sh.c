@@ -14,7 +14,7 @@
 #include <sys/stat.h>
 
 /*
-        Declare functions for internal commands
+    Declare functions for commands
 */
 
 int pwd_func(char **args);
