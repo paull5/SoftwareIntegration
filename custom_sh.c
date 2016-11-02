@@ -137,7 +137,7 @@ int ifc_func(char **args)
 	{
 	    if (args[1] != NULL) {
 	       	printf("\n");
-			sprintf(command, "ifconfig %s",args[1]);
+			sprintf(command, "/sbin/ifconfig %s",args[1]);
 			system(command);
 
 	}
