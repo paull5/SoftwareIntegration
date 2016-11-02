@@ -128,7 +128,7 @@ int ifc_func(char **args)
 	if (args[1] == NULL) 
 	{
 		printf("\n");
-		system("ifconfig eth0");
+		system("/sbin/ifconfig eth0");
 
 	//else if an argument is passed
 	//print desired ifconfig interface
