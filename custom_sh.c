@@ -384,7 +384,7 @@ int execute_func(char **args)
                 }
         }
 
-        return launch_func(args);
+        return 1;
 }
 
 /*
